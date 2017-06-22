@@ -53,7 +53,7 @@
     "deep-strict-equal": "^0.2.0",
     "exorcist": "^0.4.0",
     "http-server": "^0.10.0",
-    "jshint": "^2.9.4",
+    "jshint": "^2.9.5",
     "livereload": "^0.6.2",
     "mocha": "^3.0.2",
     "mversion": "^1.10.1",
