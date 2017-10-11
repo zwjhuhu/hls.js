@@ -56,6 +56,6 @@
     "selenium-webdriver": "^3.1.0",
     "webpack": "^3.5.5",
     "webpack-dev-server": "^2.7.1",
-    "webworkify-webpack": "^2.0.0"
+    "webworkify-webpack": "^2.0.6"
   }
 }
