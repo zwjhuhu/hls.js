@@ -83,6 +83,6 @@
     "webpack": "^3.5.5",
     "webpack-bundle-analyzer": "^2.9.1",
     "webpack-dev-server": "^2.7.1",
-    "webworkify-webpack": "^2.0.0"
+    "webworkify-webpack": "^2.1.1"
   }
 }
