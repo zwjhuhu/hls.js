@@ -17,11 +17,11 @@ export function addGroupId (level, type, id) {
     }
     level.audioGroupIds.push(id);
     break;
-  case 'text':
-    if (!level.textGroupIds) {
-      level.textGroupIds = [];
+  case 'subtitle':
+    if (!level.subtitleGroupIds) {
+      level.subtitleGroupIds = [];
     }
-    level.textGroupIds.push(id);
+    level.subtitleGroupIds.push(id);
     break;
   }
 }

@@ -73,6 +73,7 @@ export default class LevelController extends EventHandler {
     let audioCodecFound = false;
     let chromeOrFirefox = /chrome|firefox/.test(navigator.userAgent.toLowerCase());
     let audioTracks = [];
+    let subtitleTracks = [];
 
     // regroup redundant levels together
     data.levels.forEach(level => {
@@ -104,7 +105,7 @@ export default class LevelController extends EventHandler {
       }
 
       if (level.attrs && level.attrs.SUBTITLES) {
-        addGroupId(levelFromSet || level, 'text', level.attrs.SUBTITLES);
+        addGroupId(levelFromSet || level, 'subtitle', level.attrs.SUBTITLES);
       }
     });
 
@@ -141,6 +142,7 @@ export default class LevelController extends EventHandler {
       this.hls.trigger(Event.MANIFEST_PARSED, {
         levels,
         audioTracks,
+        subtitleTracks,
         firstLevel: this._firstLevel,
         stats: data.stats,
         audio: audioCodecFound,
