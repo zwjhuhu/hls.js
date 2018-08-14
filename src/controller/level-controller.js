@@ -17,6 +17,7 @@ export default class LevelController extends EventHandler {
       Event.MANIFEST_LOADED,
       Event.LEVEL_LOADED,
       Event.AUDIO_TRACK_SWITCHED,
+      Event.SUBTITLE_TRACK_SWITCH,
       Event.FRAG_LOADED,
       Event.ERROR);
 
@@ -425,6 +426,23 @@ export default class LevelController extends EventHandler {
 
     if (currentLevel.audioGroupIds) {
       const urlId = currentLevel.audioGroupIds.findIndex((groupId) => groupId === audioGroupId);
+      if (urlId !== currentLevel.urlId) {
+        currentLevel.urlId = urlId;
+        this.startLoad();
+      }
+    }
+  }
+
+  onSubtitleTrackSwitch (data) {
+    const subtitleGroupId = this.hls.subtitleTracks[data.id].groupId;
+
+    const currentLevel = this.hls.levels[this.currentLevelIndex];
+    if (!currentLevel) {
+      return;
+    }
+
+    if (currentLevel.subtitleGroupIds) {
+      const urlId = currentLevel.subtitleGroupIds.findIndex((groupId) => groupId === subtitleGroupId);
       if (urlId !== currentLevel.urlId) {
         currentLevel.urlId = urlId;
         this.startLoad();
