@@ -17,6 +17,7 @@ export default class LevelController extends EventHandler {
       Event.MANIFEST_LOADED,
       Event.LEVEL_LOADED,
       Event.AUDIO_TRACK_SWITCHED,
+      Event.SUBTITLE_TRACK_SWITCH,
       Event.FRAG_LOADED,
       Event.ERROR);
 
@@ -73,6 +74,7 @@ export default class LevelController extends EventHandler {
     let audioCodecFound = false;
     let chromeOrFirefox = /chrome|firefox/.test(navigator.userAgent.toLowerCase());
     let audioTracks = [];
+    let subtitleTracks = [];
 
     // regroup redundant levels together
     data.levels.forEach(level => {
@@ -104,7 +106,7 @@ export default class LevelController extends EventHandler {
       }
 
       if (level.attrs && level.attrs.SUBTITLES) {
-        addGroupId(levelFromSet || level, 'text', level.attrs.SUBTITLES);
+        addGroupId(levelFromSet || level, 'subtitle', level.attrs.SUBTITLES);
       }
     });
 
@@ -145,6 +147,7 @@ export default class LevelController extends EventHandler {
       this.hls.trigger(Event.MANIFEST_PARSED, {
         levels,
         audioTracks,
+        subtitleTracks,
         firstLevel: this._firstLevel,
         stats: data.stats,
         audio: audioCodecFound,
@@ -423,6 +426,23 @@ export default class LevelController extends EventHandler {
 
     if (currentLevel.audioGroupIds) {
       const urlId = currentLevel.audioGroupIds.findIndex((groupId) => groupId === audioGroupId);
+      if (urlId !== currentLevel.urlId) {
+        currentLevel.urlId = urlId;
+        this.startLoad();
+      }
+    }
+  }
+
+  onSubtitleTrackSwitch (data) {
+    const subtitleGroupId = this.hls.subtitleTracks[data.id].groupId;
+
+    const currentLevel = this.hls.levels[this.currentLevelIndex];
+    if (!currentLevel) {
+      return;
+    }
+
+    if (currentLevel.subtitleGroupIds) {
+      const urlId = currentLevel.subtitleGroupIds.findIndex((groupId) => groupId === subtitleGroupId);
       if (urlId !== currentLevel.urlId) {
         currentLevel.urlId = urlId;
         this.startLoad();
