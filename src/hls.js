@@ -613,4 +613,13 @@ export default class Hls extends Observer {
       subtitleTrackController.subtitleDisplay = value;
     }
   }
+
+  /**
+   * @returns {QualityLevel}
+   */
+  getActiveQualityLevel () {
+    return this.levels[this.currentLevel];
+  }
+
+  /**
 }
