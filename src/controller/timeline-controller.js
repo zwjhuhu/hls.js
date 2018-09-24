@@ -85,10 +85,14 @@ class TimelineController extends EventHandler {
 
   // Triggered when an initial PTS is found; used for synchronisation of WebVTT.
   onInitPtsFound (data) {
-    let demuxerId = data.id, cc = data.frag.cc, initPTS = data.initPTS;
+    let demuxerId = data.id;
+    let cc = data.frag.cc;
+    let initPTS = data.initPTS;
     if (demuxerId === 'main') {
       this.initPTS[cc] = initPTS;
     }
+
+    logger.log(`subtitles sync point: quality-level initial PTS for cc #${cc} found: ${initPTS}`);
 
     // Due to asynchroneous processing, initial PTS may arrive later than the first VTT fragments are loaded.
     // Parse any unparsed fragments upon receiving the initial PTS.
