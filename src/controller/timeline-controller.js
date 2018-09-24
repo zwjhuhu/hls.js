@@ -250,7 +250,7 @@ class TimelineController extends EventHandler {
 
         let decryptData = frag.decryptdata;
         // If the subtitles are not encrypted, parse VTTs now. Otherwise, we need to wait.
-        if ((decryptData == null) || (decryptData.key == null) || (decryptData.method !== 'AES-128')) {
+        if ((decryptData === null) || (decryptData.key === null) || (decryptData.method !== 'AES-128')) {
           this._parseVTTs(frag, payload);
         }
       } else {
