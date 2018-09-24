@@ -211,6 +211,12 @@ class SubtitleStreamController extends TaskLoop {
       decryptData = data.frag.decryptdata;
     let fragLoaded = data.frag,
       hls = this.hls;
+
+    // This is only decrypting the subtitles
+    // all the other stuff is taken care of in timeline-controller (queuing segments until we have init PTS
+    // and doing actual parsing/demuxing/buffering)
+    // TimelineController triggers an event which in turn we handle
+    // which is telling us to update our buffered range (SUBTITLE_FRAG_PROCESSED)
     if (this.state === State.FRAG_LOADING &&
         fragCurrent &&
         data.frag.type === 'subtitle' &&
