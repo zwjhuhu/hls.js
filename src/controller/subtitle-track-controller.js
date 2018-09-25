@@ -236,6 +236,10 @@ class SubtitleTrackController extends TaskLoop {
       (track) => this._subtitleGroupId === null || track.groupId === this._subtitleGroupId
     );
 
+    if (!tracks.length) {
+      return;
+    }
+
     logger.log('Looking for selectable subtitle track...');
 
     const defaultTracks = tracks.filter((track) => track.default);
@@ -252,6 +256,7 @@ class SubtitleTrackController extends TaskLoop {
     logger.log(`Selecting subtitle track id: ${selectedTrack.id}, name: ${selectedTrack.name}, group-ID: ${selectedTrack.groupId}`);
 
     if (this.media) {
+      this._toggleTrackModes(selectedTrack.id);
       this._setSubtitleTrack(selectedTrack.id);
     } else {
       this._queuedDefaultTrack = selectedTrack.id;
@@ -293,7 +298,7 @@ class SubtitleTrackController extends TaskLoop {
     this.clearInterval();
     this.trackId = newId;
 
-    logger.log(`Now switching to subtitle track ${newId}`);
+    logger.log(`Now switching to subtitle track-id ${newId}`);
     hls.trigger(Event.SUBTITLE_TRACK_SWITCH, { id: newId });
 
     // if we went to auto mode, we're done here
