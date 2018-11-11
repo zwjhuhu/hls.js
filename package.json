@@ -25,6 +25,7 @@
   },
   "scripts": {
     "build": "webpack --progress",
+	"build:tmac": "webpack --progress --env.tmac",
     "build:debug": "webpack --progress --env.debug",
     "build:watch": "webpack --progress --env.debug --watch",
     "build:analyze": "ANALYZE=true webpack --progress",

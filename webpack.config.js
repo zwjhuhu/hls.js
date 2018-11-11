@@ -124,6 +124,40 @@ function getAliasesForLightDist () {
   return aliases;
 }
 
+function getAliasesForTmacDist () {
+  let aliases = {};
+
+  if (!addEMESupport) {
+    aliases = Object.assign({}, aliases, {
+      './controller/eme-controller': './empty.js'
+    });
+  }
+
+  if (!addSubtitleSupport) {
+    aliases = clone(aliases, {
+      './utils/cues': './empty.js',
+      './controller/timeline-controller': './empty.js',
+      './controller/subtitle-track-controller': './empty.js',
+      './controller/subtitle-stream-controller': './empty.js'
+    });
+  }
+
+  if (!addAltAudioSupport) {
+    aliases = clone(aliases, {
+      './controller/audio-track-controller': './empty.js',
+      './controller/audio-stream-controller': './empty.js'
+    });
+  }
+
+  // only tm-xhr-loader used for tamper monkey
+  aliases = clone(aliases, {
+    './utils/fetch-loader': './empty.js',
+    './utils/xhr-loader': './empty.js'
+  });
+
+  return aliases;
+}
+
 const multiConfig = [
   {
     name: 'debug',
@@ -196,6 +230,28 @@ const multiConfig = [
     },
     resolve: {
       alias: getAliasesForLightDist()
+    },
+    plugins: getPluginsForConfig('light', true),
+    optimization: {
+      minimize: true
+    },
+    devtool: 'source-map'
+  },
+  {
+    name: 'tmac',
+    mode: 'production',
+    output: {
+      filename: 'hls.tmac.min.js',
+      chunkFilename: '[name].js',
+      path: path.resolve(__dirname, 'dist'),
+      publicPath: '/dist/',
+      library: 'Hls',
+      libraryTarget: 'umd',
+      libraryExport: 'default',
+      globalObject: 'this'
+    },
+    resolve: {
+      alias: getAliasesForTmacDist()
     },
     plugins: getPluginsForConfig('light', true),
     optimization: {

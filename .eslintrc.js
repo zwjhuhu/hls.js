@@ -82,6 +82,7 @@ module.exports = {
     'no-mixed-operators': 1,
     'no-unused-vars': 1,
     'no-console': 1,
+    'no-undef': 1,
     'no-fallthrough': 1,
     'no-case-declarations': 1,
     'no-irregular-whitespace': 1,
