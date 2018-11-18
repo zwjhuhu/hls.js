@@ -52,6 +52,7 @@ class Demuxer {
       let w;
       try {
         w = this.w = work(require.resolve('../demux/demuxer-worker.js'));
+        this.useWrappedJSObject = typeof w.wrappedJSObject !== 'undefined';
         this.onwmsg = this.onWorkerMessage.bind(this);
         w.addEventListener('message', this.onwmsg);
         w.onerror = function (event) {
@@ -122,9 +123,24 @@ class Demuxer {
     }
   }
 
+  // Notice:
+  // In Firefox, part of the isolation between content scripts and page scripts is implemented using a feature called "Xray vision"
+  // see:
+  // https://github.com/rbuckton/reflect-metadata/issues/94
+  // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/Xray_vision
+  // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Sharing_objects_with_page_scripts
+  // https://stackoverflow.com/questions/44671610/sandboxed-this-in-firefox-webextension-content-script
   onWorkerMessage (ev) {
-    let data = ev.data,
-      hls = this.hls;
+    let data = ev.data;
+    let hls = this.hls;
+    let contentData = data.data || {};
+    if (this.useWrappedJSObject) {
+      let originData = data.data;
+      contentData = {};
+      for (let key in originData) {
+        contentData[key] = originData[key];
+      }
+    }
     switch (data.event) {
     case 'init':
       // revoke the Object URL that was used to create demuxer worker, so as not to leak it
@@ -132,17 +148,15 @@ class Demuxer {
       break;
       // special case for FRAG_PARSING_DATA: data1 and data2 are transferable objects
     case Event.FRAG_PARSING_DATA:
-      data.data.data1 = new Uint8Array(data.data1);
+      contentData.data1 = new Uint8Array(data.data1);
       if (data.data2) {
-        data.data.data2 = new Uint8Array(data.data2);
+        contentData.data2 = new Uint8Array(data.data2);
       }
-
       /* falls through */
     default:
-      data.data = data.data || {};
-      data.data.frag = this.frag;
-      data.data.id = this.id;
-      hls.trigger(data.event, data.data);
+      contentData.frag = this.frag;
+      contentData.id = this.id;
+      hls.trigger(data.event, contentData);
       break;
     }
   }
